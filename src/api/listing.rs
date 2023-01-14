@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::api::request::get_url;
 use crate::api::BACKEND_URL;
-use crate::models::listing::{Attachment, Listing};
+use crate::models::listing::Attachment;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -56,7 +56,7 @@ pub struct LocalizationEntryText {
     pub description: String,
 }
 
-pub async fn get_listing(ids: &[&str]) -> Result<ListingResponse, reqwest::Error> {
+pub async fn get_listings(ids: &[&str]) -> Result<ListingResponse, reqwest::Error> {
     let url: Url = Url::parse(&format!(
         "{}{}?ids={}",
         BACKEND_URL,
@@ -78,12 +78,12 @@ pub fn parse_listing_result(str: &str) -> ListingResponse {
 
 #[cfg(test)]
 mod tests {
-    use crate::api::listing::{get_listing, parse_listing_result};
+    use crate::api::listing::{get_listings, parse_listing_result};
     use std::fs;
 
     #[tokio::test]
     pub async fn it_gets_listing() {
-        let listing_response = get_listing(&["3002337524"])
+        let listing_response = get_listings(&["3002337524"])
             .await
             .expect("request succeeds");
         assert!(listing_response.listings.len() == 1);
