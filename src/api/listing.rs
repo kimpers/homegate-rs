@@ -72,7 +72,6 @@ pub async fn get_listings(ids: &[&str]) -> Result<ListingResponse, reqwest::Erro
 }
 
 pub fn parse_listing_result(str: &str) -> ListingResponse {
-    println!("str: {}", str);
     serde_json::from_str(str).unwrap()
 }
 
