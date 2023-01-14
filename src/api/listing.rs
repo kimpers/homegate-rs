@@ -46,7 +46,6 @@ pub struct Localization {
 pub struct LocalizationEntry {
     pub attachments: Vec<Attachment>,
     pub text: LocalizationEntryText,
-    pub urls: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
@@ -73,6 +72,7 @@ pub async fn get_listings(ids: &[&str]) -> Result<ListingResponse, reqwest::Erro
 }
 
 pub fn parse_listing_result(str: &str) -> ListingResponse {
+    println!("str: {}", str);
     serde_json::from_str(str).unwrap()
 }
 
@@ -83,7 +83,7 @@ mod tests {
 
     #[tokio::test]
     pub async fn it_gets_listing() {
-        let listing_response = get_listings(&["3002337524"])
+        let listing_response = get_listings(&["3002335392"])
             .await
             .expect("request succeeds");
         assert!(listing_response.listings.len() == 1);
