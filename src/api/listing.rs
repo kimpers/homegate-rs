@@ -24,6 +24,7 @@ pub struct ExtendedListing {
     pub localization: Localization,
     pub characteristics: Characteristics,
     pub available_from: Option<String>,
+    pub description: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
