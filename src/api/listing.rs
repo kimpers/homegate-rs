@@ -53,7 +53,7 @@ pub struct LocalizationEntry {
 #[serde(rename_all = "camelCase")]
 pub struct LocalizationEntryText {
     pub title: String,
-    pub description: String,
+    pub description: Option<String>,
 }
 
 pub async fn get_listings(ids: &[&str]) -> Result<ListingResponse, reqwest::Error> {
