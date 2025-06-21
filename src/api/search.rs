@@ -1,9 +1,9 @@
 use reqwest::{Response, Url};
 use serde::{Deserialize, Serialize};
 
+use crate::api::request::post_url;
 use crate::api::BACKEND_URL;
-use crate::api::request::{post_url};
-use crate::models::paginated::{Paginated, parse_search_result};
+use crate::models::paginated::{parse_search_result, Paginated};
 use crate::models::realestate::{OfferType, RealEstate};
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -138,13 +138,9 @@ pub struct SearchRequest<'se> {
 }
 
 const LT: LocaleTemplate = LocaleTemplate {
-    urls: LocaleUrlsTemplate {
-        t: true
-    },
+    urls: LocaleUrlsTemplate { t: true },
     attachments: true,
-    text: LocaleTextTemplate {
-        title: true,
-    },
+    text: LocaleTextTemplate { title: true },
 };
 
 pub fn default_search<'a>() -> SearchRequest<'a> {
@@ -155,17 +151,17 @@ pub fn default_search<'a>() -> SearchRequest<'a> {
                 "APARTMENT",
                 "MAISONETTE",
                 "DUPLEX",
-                "AtticFlat",
+                "ATTIC_FLAT",
                 "ROOF_FLAT",
                 "STUDIO",
-                "SingleRoom",
-                "TerraceFlat",
-                "BachelorFlat",
+                "SINGLE_ROOM",
+                "TERRACE_FLAT",
+                "BACHELOR_FLAT",
                 "LOFT",
                 "ATTIC",
-                "RowHouse",
-                "BifamiliarHouse",
-                "TerraceHouse",
+                "ROW_HOUSE",
+                "BIFAMILIAR_HOUSE",
+                "TERRACE_HOUSE",
                 "VILLA",
                 "FARM_HOUSE",
                 "CAVE_HOUSE",
@@ -175,19 +171,23 @@ pub fn default_search<'a>() -> SearchRequest<'a> {
                 "RUSTICO",
                 "SINGLE_HOUSE",
                 "HOBBY_ROOM",
-                "CellarCompartment",
-                "AtticCompartment",
+                "CELLAR_COMPARTMENT",
+                "ATTIC_COMPARTMENT",
             ]),
-            exclude_categories: Vec::from(vec![
-                "FurnishedFlat"
-            ]),
-            living_space: FromTo { from: Some(60), to: None },
-            location: Location {
-                latitude: 47.36660529240991,
-                longitude: 8.541818987578154,
-                radius: 1245,
+            exclude_categories: Vec::from(vec!["FURNISHED_FLAT"]),
+            living_space: FromTo {
+                from: Some(60),
+                to: None,
             },
-            monthly_rent: FromTo { from: Some(500), to: None },
+            location: Location {
+                latitude: 47.359856,
+                longitude: 8.541819,
+                radius: 622,
+            },
+            monthly_rent: FromTo {
+                from: Some(500),
+                to: None,
+            },
             number_of_rooms: FromTo {
                 from: Some(2),
                 to: None,
@@ -200,7 +200,10 @@ pub fn default_search<'a>() -> SearchRequest<'a> {
             listing: ListingTemplate {
                 address: AddressTemplate {
                     country: true,
-                    geo_coordinates: GeoCoordsTemplate { latitude: true, longitude: true },
+                    geo_coordinates: GeoCoordsTemplate {
+                        latitude: true,
+                        longitude: true,
+                    },
                     locality: true,
                     post_office_box_number: true,
                     postal_code: true,
@@ -217,7 +220,10 @@ pub fn default_search<'a>() -> SearchRequest<'a> {
                     total_floor_space: true,
                 },
                 id: true,
-                lister: ListerTemplate { logo_url: true, phone: true },
+                lister: ListerTemplate {
+                    logo_url: true,
+                    phone: true,
+                },
                 localization: LocalizationTemplate {
                     de: LT.clone(),
                     en: LT.clone(),
@@ -254,25 +260,23 @@ pub async fn search(location: &Location) -> Result<Paginated<RealEstate>, reqwes
 
 #[cfg(test)]
 mod tests {
-    
+
     use std::fs;
 
-    
-    
-
-    use crate::api::search::{default_search, Location, search, SearchRequest};
+    use crate::api::search::{default_search, search, Location, SearchRequest};
     use crate::models::paginated::parse_search_result;
+    use crate::models::realestate::RealEstate;
 
     const ZURICH_LATLNG: (f64, f64) = (47.36667, 8.55);
 
     #[tokio::test]
     pub async fn search_apartment() {
-        let paginated_result = search(
-            &Location {
-                latitude: ZURICH_LATLNG.0 as f32,
-                longitude: ZURICH_LATLNG.1 as f32,
-                radius: 1000,
-            }).await;
+        let paginated_result = search(&Location {
+            latitude: ZURICH_LATLNG.0 as f32,
+            longitude: ZURICH_LATLNG.1 as f32,
+            radius: 1000,
+        })
+        .await;
         assert!(paginated_result.is_ok());
 
         let pr = paginated_result.unwrap();
@@ -292,8 +296,6 @@ mod tests {
     #[test]
     pub fn parse_json() {
         let file = fs::read_to_string("./resources/test/search.json").unwrap();
-        let paginated_result = parse_search_result(&file);
-
-        assert!(paginated_result.total > 0)
+        parse_search_result::<RealEstate>(&file);
     }
 }

@@ -1,10 +1,10 @@
 use chrono::Utc;
-use reqwest::{Client, ClientBuilder, Error, Response, Url};
 use reqwest::header;
 use reqwest::header::HeaderValue;
+use reqwest::{Client, ClientBuilder, Error, Response, Url};
 
-use crate::api::{API_PASSWORD, API_USERNAME, BACKEND_URL, USER_AGENT};
 use crate::api::app_id::{app_version, calculate_app_id};
+use crate::api::{API_PASSWORD, API_USERNAME, BACKEND_URL, USER_AGENT};
 
 fn build_client<'a>() -> Result<Client, Error> {
     let client_builder: ClientBuilder = reqwest::Client::builder();
@@ -15,7 +15,10 @@ fn build_client<'a>() -> Result<Client, Error> {
 
     const APPL_JSON: &str = "application/json";
 
-    default_headers.insert(header::AUTHORIZATION, HeaderValue::from_str(&format!("Basic {}", key)).unwrap());
+    default_headers.insert(
+        header::AUTHORIZATION,
+        HeaderValue::from_str(&format!("Basic {}", key)).unwrap(),
+    );
     default_headers.insert(header::ACCEPT, HeaderValue::from_static(APPL_JSON));
     default_headers.insert("X-App-Id", app_id.parse().unwrap());
     default_headers.insert("X-App-Version", app_version().parse().unwrap());
@@ -25,9 +28,7 @@ fn build_client<'a>() -> Result<Client, Error> {
 }
 
 pub async fn get(path: &str) -> Result<Response, Error> {
-    let url = Url::parse(&format!("{}{}",
-                                  BACKEND_URL,
-                                  path));
+    let url = Url::parse(&format!("{}{}", BACKEND_URL, path));
 
     let c: Client = build_client().unwrap();
     let req = c.get(url.unwrap()).build().unwrap();

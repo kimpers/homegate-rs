@@ -1,18 +1,22 @@
 [package]
 name = "homegate"
-description = "Library to interact with homegate.ch's unofficial API"
-license = "MIT"
 version = "0.1.0"
-authors = ["Denys Vitali <denys@denv.it>"]
 edition = "2021"
+license = "MIT"
+description = "A rust client for the homegate.ch API"
+homepage = "https://github.com/kimyv/homegate-rs"
+repository = "https://github.com/kimyv/homegate-rs"
+readme = "README.md"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0"
-chrono = "0.4"
-hmac = "0.12"
-reqwest = { version="0.11", features=["json"]}
-serde = { version="1", features=["derive"]}
-serde_json = "1"
-sha2 = "0.10"
-byteorder = "1"
-tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11.23", features = ["json"] }
+serde_json = "1.0.108"
+serde = { version = "1.0.193", features = ["derive"] }
+tokio = { version = "1.35.1", features = ["full"] }
+url = "2.5.0"
+base64 = "0.21.7"
+chrono = "0.4.34"
+hmac = "0.12.1"
+sha2 = "0.10.8"
+byteorder = "1.5.0"

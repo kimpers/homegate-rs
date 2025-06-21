@@ -1,30 +1,30 @@
-use serde::{Serialize, Deserialize};
-use crate::models::realestate::RealEstate;
+use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Paginated<T> {
-    pub from: u32,
-    pub max_from: u32,
-    pub results: Vec<T>,
-    pub size: u32,
-    pub total: u32,
+    pub from: Option<u32>,
+    pub size: Option<u32>,
+    pub total: Option<u32>,
+    pub results: Option<Vec<T>>,
 }
 
-pub fn parse_search_result(str: &str) -> Paginated<RealEstate> {
+pub fn parse_search_result<T: DeserializeOwned>(str: &str) -> Paginated<T> {
     serde_json::from_str(str).unwrap()
 }
 
 #[cfg(test)]
 mod test {
-    use std::fs;
     use crate::models::paginated::parse_search_result;
+    use crate::models::realestate::RealEstate;
+    use std::fs;
 
     #[test]
     pub fn parse_result_2() {
         let file = fs::read_to_string("./resources/test/result-2.json").unwrap();
-        let paginated_result = parse_search_result(&file);
+        let paginated_result = parse_search_result::<RealEstate>(&file);
 
-        assert!(paginated_result.total > 0)
+        assert_eq!(paginated_result.results.unwrap().len(), 20)
     }
 }
